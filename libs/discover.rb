@@ -55,9 +55,9 @@ class Discover
     response = Typhoeus::Request.get(@url.to_s + 'logs/')
 
     if response.code == 200
-      if response.body =~ %r{PHP Fatal error}i
-        exists = true
-      end
+     puts
+     puts "[!]Logs folder publicly accessible at " + url.to_s + "logs/"
+     puts
     end
 
     exists
