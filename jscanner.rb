@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-
+#This work is strongly based on the work done on Wordpress scanner by Ryan Dewhurst aka Ethicalhack3r
+#For that reason some code will be similar or even equal to wordpress scanner, it is an amazing tool
+#and you should go and try it
 
 
 $: << '.'
@@ -121,4 +123,33 @@ help()
 exit(1)
 end
 
+# Output runtime data
 
+puts '| URL: ' + url.to_s
+puts '| Started on ' + Time.now.asctime
+puts 
+
+# Create the discover object
+
+discover = Discover.new(url, threads, verbose)
+
+# Is the readme.html file there?
+
+if discover.readme_exists?
+  puts "[!] The Joomla \"" + url.to_s  + "README.txt\" file exists."
+end
+
+# Is there a error_log file in te plugins dir?
+
+if discover.error_log
+  puts "[!] A Joomla error_log file has been found: " + url.to_s + "/error_log/"
+end
+
+find_version = discover.readme_version
+unless find_version == false or find_version == '' or find_version.nil?
+  puts  "[!] A readme was found and according to it the Joomla version is:  " + find_version.to_s
+else #in future modify this part to do a different type os search as README.txt was only added on 1.7.x
+  puts " [ :( ] Nothing found on version"
+end
+puts '[+] Finished at ' + Time.now.asctime
+exit() # must exit!
