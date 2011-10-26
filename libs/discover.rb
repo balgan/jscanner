@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+require "uri"
 class Discover
 
   attr_accessor :url, :threads, :verbose
@@ -27,7 +27,7 @@ class Discover
   end
 
 #Attempts to find the Joomla version by reading the README.txt and extracting the text
-#Not the cleanest method but works for now  
+#Not the cleanest method but works for now  versions 1.6.x 1.7.x
 # TODO: IMPROVE THIS METHOD OF SEARCH IN FUTURE
   def readme_version
 
@@ -58,6 +58,10 @@ class Discover
      puts
      puts "[!]Logs folder publicly accessible at " + url.to_s + "logs/"
      puts
+     else
+     puts
+     puts "[!]Logs folder !! NOT!! publicly accessible at " + url.to_s + "logs/"
+     puts
     end
 
     exists
@@ -81,5 +85,20 @@ class Discover
 
   end
 
+
+  def search_exploitdb(version)
+    @url1 = "http://www.exploit-db.com/search/?action=search&filter_page=1&filter_description=&filter_exploit_text=Joomla+" 
+    @url2 = "&filter_author=&filter_platform=0&filter_type=0&filter_lang_id=0&filter_port=&filter_osvdb=&filter_cve="
+    @version = version
+    version[".x"]= ""
+    puts "[?] SEARCHING: Joomla+" +@version.to_s + " at " + @url1.to_s + @version.to_s + @url2.to_s 
+    response = Typhoeus::Request.get(@url1.to_s + @version.to_s + @url2.to_s )
+    response.body.scan(/(.*)\/exploits\/(.*)/) do
+    |link|
+    puts link
+    #gsub(/href=['"]/)
+    end
+    
+  end
 
 end

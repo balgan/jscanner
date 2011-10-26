@@ -137,19 +137,27 @@ discover = Discover.new(url, threads, verbose)
 
 if discover.readme_exists?
   puts "[!] The Joomla \"" + url.to_s  + "README.txt\" file exists."
+  puts
 end
 
 # Is there a error_log file in te plugins dir?
 
 if discover.error_log
   puts "[!] A Joomla error_log file has been found: " + url.to_s + "/error_log/"
+  puts
 end
+
 
 find_version = discover.readme_version
 unless find_version == false or find_version == '' or find_version.nil?
-  puts  "[!] A readme was found and according to it the Joomla version is:  " + find_version.to_s
-else #in future modify this part to do a different type os search as README.txt was only added on 1.7.x
+  puts  "[!] A readme was found and according to it the Joomla version is: " + find_version.to_s.gsub(/\s+/, "")
+  puts
+  #searches on exploit db for version without any whitespaces
+  discover.search_exploitdb(find_version.to_s.gsub(/\s+/, ""))
+else #in future modify this part to do a different type of search as README.txt exists in 1.6.x and 1.7.x
   puts " [ :( ] Nothing found on version"
 end
+
+
 puts '[+] Finished at ' + Time.now.asctime
 exit() # must exit!
