@@ -140,12 +140,14 @@ if discover.readme_exists
   puts
 end
 
-# Is there a error_log file in te plugins dir?
+# Is there a error_log file in the plugins dir?
 
 if discover.error_log
   puts "[!] A Joomla error_log file has been found: " + url.to_s + "/error_log/"
   puts
 end
+
+extensions_found = discover.find_extension
 
 
 find_version = discover.readme_version

@@ -10,7 +10,9 @@ class Discover
     @verbose = verbose
   end
 
-  def readme_exists
+
+#Checks if README.txt exists
+def readme_exists
 
     exists = false
 
@@ -71,16 +73,18 @@ class Discover
   def error_log
 
     exists = false
-
+  if(url.to_s[-1,1]=="/")
     response = Typhoeus::Request.get(@url.to_s + 'logs/')
-
+  else
+     response = Typhoeus::Request.get(@url.to_s + '/logs/')
+  end
     if response.code == 200
+       puts
+       puts "[!]Logs folder publicly accessible at " + response.effective_url.to_s
+       puts
+    else
      puts
-     puts "[!]Logs folder publicly accessible at " + url.to_s + "logs/"
-     puts
-     else
-     puts
-     puts "[!]Logs folder !! NOT!! publicly accessible at " + url.to_s + "logs/"
+     puts "[!]Logs folder !! NOT!! publicly accessible at " +  response.effective_url.to_s
      puts
     end
 
@@ -104,6 +108,25 @@ class Discover
     listing
 
   end
+  
+  
+
+def find_extension
+    
+    exists = false
+
+    response = Typhoeus::Request.get(@url.to_s)
+        response.body.scan(/(.*)extension(.*)/) do
+        |link|
+        puts "[!] An extension was found: "
+        puts link
+        puts
+    end
+
+    exists
+    
+  end
+
 
 
   def search_exploitdb(version)
