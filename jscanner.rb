@@ -135,7 +135,7 @@ discover = Discover.new(url, threads, verbose)
 
 # Is the readme.html file there?
 
-if discover.readme_exists?
+if discover.readme_exists
   puts "[!] The Joomla \"" + url.to_s  + "README.txt\" file exists."
   puts
 end
@@ -155,7 +155,13 @@ unless find_version == false or find_version == '' or find_version.nil?
   #searches on exploit db for version without any whitespaces
   discover.search_exploitdb(find_version.to_s.gsub(/\s+/, ""))
 else #in future modify this part to do a different type of search as README.txt exists in 1.6.x and 1.7.x
-  puts " [ :( ] Nothing found on version"
+  gen_version = discover.advanced_version_finder
+unless gen_version == false or gen_version == '' or gen_version.nil?
+  puts '[!] Joomla version ' + gen_version.to_s  + ' according to meta.'
+  
+else
+  puts "[ :-( ] Nothing found!"
+end
 end
 
 

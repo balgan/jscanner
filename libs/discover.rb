@@ -10,7 +10,7 @@ class Discover
     @verbose = verbose
   end
 
-  def readme_exists?
+  def readme_exists
 
     exists = false
 
@@ -34,7 +34,6 @@ class Discover
     version = false
 
     response = Typhoeus::Request.get(@url.to_s + 'README.TXT')
-
     if response.code == 200
       #if response.body =~ %r{Joomla! Official site: http://www.joomla.org}i
          version = response.body[80,10]
@@ -43,6 +42,27 @@ class Discover
     end
   version
     
+  end
+  
+  #This version of finder will try to find if the website is running Joomla and what version using the generator tag
+  #This is based on this website http://www.thinkbigshot.com/blog/technical/186-how-to-detect-if-a-site-uses-joomla.html
+  
+  
+  def advanced_version_finder
+    
+    version = false
+    response = Typhoeus::Request.get(@url.to_s)
+    
+
+    # follow redirects...
+
+    until response.code !~ /30/
+      response = Net::HTTP.get_response(URI.parse(response.headers_hash['location']))
+    end
+
+    version = response.body[%r{name="generator" content="Joomla! (.*)"}i, 1]
+
+     
   end
 
   
@@ -96,7 +116,6 @@ class Discover
     response.body.scan(/(.*)\/exploits\/(.*)/) do
     |link|
     puts link
-    #gsub(/href=['"]/)
     end
     
   end
